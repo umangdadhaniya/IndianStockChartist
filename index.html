@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Indian Stock Chartist</title>
+<meta name="description" content="Indian stock market mood, stocks in focus, FII and DII flows and chart studies by Umang Dadhaniya. Educational only, not buy or sell advice.">
+<meta property="og:title" content="Indian Stock Chartist">
+<meta property="og:description" content="Market mood, stocks in focus, FII/DII flows and chart studies of Indian stocks.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: chart-paper page; header with tabs, one panel visible at a time. */
+:root {
+  --paper: #f3f5f2; --grid: #e3e8e2; --card: #ffffff; --ink: #14222b; --muted: #5b6b72;
+  --line: #d5ddd8; --accent: #1d5a7e; --up: #17834a; --up-soft: #dcf1e3; --down: #c2352b;
+  --down-soft: #fbe2df; --flat: #9a6b10; --flat-soft: #f6ebcf;
+  --display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", Roboto, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f161b; --grid: #17222a; --card: #151f26; --ink: #e5ecee; --muted: #93a4ab;
+    --line: #26343d; --accent: #6cb4de; --up: #4cc985; --up-soft: #133325; --down: #f07a6f;
+    --down-soft: #3a1b18; --flat: #e2b552; --flat-soft: #352a12; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f161b; --grid: #17222a; --card: #151f26; --ink: #e5ecee; --muted: #93a4ab;
+  --line: #26343d; --accent: #6cb4de; --up: #4cc985; --up-soft: #133325; --down: #f07a6f;
+  --down-soft: #3a1b18; --flat: #e2b552; --flat-soft: #352a12; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background-color: var(--paper);
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 28px 28px;
+  color: var(--ink); font: 400 16px/1.55 var(--body);
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+a { color: var(--accent); }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+.label { font: 500 12px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.pos { color: var(--up); } .neg { color: var(--down); }
+
+/* header */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 20px 12px; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
+.brand-name { font: 800 22px/1 var(--display); font-stretch: 85%; }
+.brand-sub { font: 500 12px/1.3 var(--mono); color: var(--muted); }
+.links { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px;
+  font: 600 14px/1 var(--body); text-decoration: none; border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+.btn:hover { border-color: var(--accent); }
+.btn:focus-visible, .tab:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.btn.solid { background: var(--accent); border-color: var(--accent); color: var(--paper); }
+
+/* tabs */
+.tabs-bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: none; padding: 14px 14px 12px; border: 0; background: none; color: var(--muted); cursor: pointer;
+  font: 600 15px/1 var(--body); border-bottom: 3px solid transparent;
+}
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+.panel { padding-block: 28px 40px; }
+.panel-head { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.panel-head h2 { font-size: clamp(30px, 5vw, 44px); font-weight: 800; font-stretch: 80%; }
+.panel-head p { margin: 6px 0 0; color: var(--muted); max-width: 60ch; }
+
+/* market */
+.mood { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: end; }
+.mood-word { font: 800 clamp(56px, 11vw, 116px)/0.9 var(--display); font-stretch: 70%; margin-top: 10px; }
+.mood-word.Bearish { color: var(--down); } .mood-word.Bullish { color: var(--up); } .mood-word.Neutral { color: var(--flat); }
+.mood-text { max-width: 46ch; color: var(--muted); margin: 14px 0 0; }
+.indices { display: grid; gap: 12px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; min-width: 0; }
+.index { display: grid; gap: 10px; }
+.index-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.index-name { font: 700 18px/1.1 var(--display); font-stretch: 90%; }
+.teaser { margin-top: 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+.teaser button { text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.teaser .big { font: 800 30px/1.1 var(--display); font-stretch: 80%; margin-top: 6px; }
+
+/* chips */
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { display: inline-flex; flex-direction: column; align-items: center; min-width: 58px; padding: 6px 8px 5px; border-radius: 6px; border: 1px solid transparent; font: 500 11px/1.1 var(--mono); }
+.chip b { font: 600 12px/1.2 var(--body); margin-top: 3px; }
+.chip.Strong { background: var(--up); color: var(--card); }
+.chip.Bull { background: var(--up-soft); color: var(--up); border-color: var(--up); }
+.chip.Weak { background: var(--flat-soft); color: var(--flat); border-color: var(--flat); }
+.chip.Bear { background: var(--down-soft); color: var(--down); border-color: var(--down); }
+.chip.na { background: var(--paper); color: var(--muted); border-color: var(--line); }
+.legend { display: flex; gap: 6px; flex-wrap: wrap; }
+.legend .chip { min-width: 0; flex-direction: row; padding: 4px 8px; }
+
+/* stocks */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 14px; }
+.stock { display: grid; gap: 12px; align-content: start; }
+.stock-head { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+.sym { font: 800 24px/1 var(--display); font-stretch: 85%; }
+.sub { color: var(--muted); font-size: 14px; margin-top: 4px; }
+.px { text-align: right; } .px .num { font-size: 18px; font-weight: 500; }
+.tag { justify-self: start; font: 500 12px/1 var(--mono); padding: 6px 10px; border-radius: 999px; background: var(--paper); border: 1px dashed var(--accent); color: var(--accent); }
+.note { margin: 0; font-size: 15px; }
+.empty { background: var(--card); border: 1px dashed var(--line); border-radius: 10px; padding: 24px; color: var(--muted); }
+
+/* studies */
+.study { display: grid; gap: 12px; align-content: start; }
+.study h3 { font-size: 21px; font-weight: 700; font-stretch: 88%; }
+.levels { display: flex; gap: 8px; flex-wrap: wrap; }
+.lv { border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; background: var(--paper); }
+.lv .label { font-size: 10px; }
+.lv .num { font-size: 14px; }
+.study p { margin: 0; white-space: pre-line; }
+.study .meta { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+
+/* fii dii */
+.flow-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; margin-bottom: 26px; }
+.flow-cards .val { font: 600 26px/1.15 var(--mono); font-variant-numeric: tabular-nums; margin-top: 6px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--card); }
+.seg button { border: 0; background: none; padding: 8px 14px; font: 600 14px/1 var(--body); color: var(--muted); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.table-wrap { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; min-width: 560px; }
+th, td { padding: 10px 14px; text-align: right; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+th { font: 500 12px/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+th:first-child, td:first-child { text-align: left; }
+tr:last-child td { border-bottom: 0; }
+td.bar-cell { width: 34%; }
+.bar { position: relative; height: 12px; }
+.bar::before { content: ""; position: absolute; left: 50%; top: -4px; bottom: -4px; width: 1px; background: var(--line); }
+.bar span { position: absolute; top: 0; height: 12px; border-radius: 2px; }
+.bar .f { background: var(--down); } .bar .f.p { background: var(--up); }
+.bar .d { background: var(--accent); top: 0; opacity: .55; }
+.src { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+/* contact */
+.contact { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 14px; }
+.contact a.card { text-decoration: none; color: var(--ink); display: grid; gap: 10px; }
+.contact a.card:hover { border-color: var(--accent); }
+.contact .handle { font: 500 15px/1.3 var(--mono); color: var(--accent); word-break: break-all; }
+.contact h3 { font-size: 22px; font-weight: 700; font-stretch: 88%; }
+.icon { width: 40px; height: 40px; border-radius: 8px; display: grid; place-items: center; background: var(--ink); color: var(--paper); }
+
+footer { padding-block: 24px 40px; color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); }
+footer p { max-width: 80ch; margin: 0 0 8px; }
+
+@media (max-width: 760px) { .mood { grid-template-columns: 1fr; align-items: start; } }
+@media (prefers-reduced-motion: no-preference) { .btn, .tab { transition: border-color .15s ease, color .15s ease; } }
+</style>
+</head>
+<body>
+<header class="wrap top">
+  <a class="brand" href="#market">
+    <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+      <rect x="0.5" y="0.5" width="39" height="39" rx="8" fill="var(--card)" stroke="var(--line)"></rect>
+      <line x1="11" y1="8" x2="11" y2="30" stroke="var(--down)" stroke-width="2"></line>
+      <rect x="7.5" y="13" width="7" height="11" rx="1" fill="var(--down)"></rect>
+      <line x1="20" y1="10" x2="20" y2="32" stroke="var(--up)" stroke-width="2"></line>
+      <rect x="16.5" y="15" width="7" height="12" rx="1" fill="var(--up)"></rect>
+      <line x1="29" y1="5" x2="29" y2="26" stroke="var(--up)" stroke-width="2"></line>
+      <rect x="25.5" y="8" width="7" height="13" rx="1" fill="var(--up)"></rect>
+    </svg>
+    <span><span class="brand-name">Indian Stock Chartist</span><br><span class="brand-sub">Chart study of Indian stocks</span></span>
+  </a>
+  <nav class="links" id="topLinks" aria-label="Social links"></nav>
+</header>
+
+<div class="tabs-bar">
+  <div class="wrap tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" id="tab-market" data-tab="market">Market</button>
+    <button class="tab" role="tab" id="tab-focus" data-tab="focus">Stocks in focus</button>
+    <button class="tab" role="tab" id="tab-studies" data-tab="studies">My studies</button>
+    <button class="tab" role="tab" id="tab-flows" data-tab="flows">FII / DII</button>
+    <button class="tab" role="tab" id="tab-contact" data-tab="contact">Contact</button>
+  </div>
+</div>
+
+<main>
+  <section class="wrap panel" id="p-market" role="tabpanel" aria-labelledby="tab-market">
+    <div class="mood">
+      <div>
+        <div class="label">Market mood · <span id="dataDate"></span></div>
+        <div class="mood-word" id="moodWord">…</div>
+        <p class="mood-text" id="moodText"></p>
+      </div>
+      <div class="indices" id="indices"></div>
+    </div>
+    <div class="teaser" id="teaser"></div>
+  </section>
+
+  <section class="wrap panel" id="p-focus" role="tabpanel" aria-labelledby="tab-focus" hidden>
+    <div class="panel-head">
+      <div><div class="label">Updated on market days</div><h2>Stocks in focus</h2>
+        <p>Stocks whose charts look strongest right now, with trend strength on each timeframe.</p></div>
+      <div class="legend" aria-label="Legend"><span class="chip Strong">Strong</span><span class="chip Bull">Bull</span><span class="chip Weak">Weak</span><span class="chip Bear">Bear</span></div>
+    </div>
+    <div class="grid" id="stocks"></div>
+  </section>
+
+  <section class="wrap panel" id="p-studies" role="tabpanel" aria-labelledby="tab-studies" hidden>
+    <div class="panel-head">
+      <div><div class="label">Chart notes</div><h2>My studies</h2>
+        <p>My own chart studies with the support and resistance levels I am watching.</p></div>
+    </div>
+    <div class="grid" id="studyList"></div>
+  </section>
+
+  <section class="wrap panel" id="p-flows" role="tabpanel" aria-labelledby="tab-flows" hidden>
+    <div class="panel-head">
+      <div><div class="label">Institutional flows · cash market</div><h2>FII / DII</h2>
+        <p>Net buying (+) or selling (−) in ₹ crore.</p></div>
+      <div class="seg" role="group" aria-label="Period">
+        <button type="button" data-view="daily" aria-pressed="true">Daily</button>
+        <button type="button" data-view="monthly" aria-pressed="false">Monthly</button>
+        <button type="button" data-view="yearly" aria-pressed="false">Yearly</button>
+      </div>
+    </div>
+    <div class="flow-cards" id="flowCards"></div>
+    <div class="table-wrap"><table id="flowTable"></table></div>
+    <p class="src" id="flowSrc"></p>
+  </section>
+
+  <section class="wrap panel" id="p-contact" role="tabpanel" aria-labelledby="tab-contact" hidden>
+    <div class="panel-head">
+      <div><div class="label">Get in touch</div><h2>Contact</h2>
+        <p>Umang Dadhaniya. Follow along or send me a message on any of these.</p></div>
+    </div>
+    <div class="contact" id="contactList"></div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p><strong>Disclaimer.</strong> I am not registered with SEBI as an investment adviser or research analyst. Everything on this site is chart study for learning. It is not a recommendation to buy, sell or hold any security. Markets carry risk; do your own research and consult a registered adviser before you trade.</p>
+  <p id="updated"></p>
+</footer>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  var S = window.SITE || {};
+  S.indices = S.indices || []; S.stocks = S.stocks || []; S.studies = S.studies || []; S.contact = S.contact || {};
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
+  var fmt = function (n, d) { return Number(n).toLocaleString("en-IN", { maximumFractionDigits: d == null ? 2 : d, minimumFractionDigits: d == null ? 2 : d }); };
+  var signed = function (n, d) { return (n > 0 ? "+" : n < 0 ? "−" : "") + fmt(Math.abs(n), d); };
+  var cls = function (n) { return n > 0 ? "pos" : n < 0 ? "neg" : ""; };
+  var dstr = function (iso, opts) { return new Date(iso + "T00:00:00").toLocaleDateString("en-IN", opts || { day: "numeric", month: "short", year: "numeric" }); };
+  var chip = function (tf, st) { var c = ["Strong", "Bull", "Weak", "Bear"].indexOf(st) >= 0 ? st : "na"; return '<span class="chip ' + c + '">' + esc(tf) + "<b>" + esc(st || "n/a") + "</b></span>"; };
+  var I = {
+    tg: '<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M21.9 4.3 18.7 19.5c-.2 1-.9 1.3-1.7.8l-4.8-3.5-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2L6.5 13.3 1.8 11.8c-1-.3-1-1 .2-1.5L20.6 3c.9-.3 1.6.2 1.3 1.3Z"/></svg>',
+    x: '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.2 2h3.4l-7.4 8.5L23 22h-6.8l-5.3-7-6.1 7H1.4l7.9-9.1L1 2h7l4.8 6.4L18.2 2Zm-1.2 18h1.9L7.1 3.9H5.1L17 20Z"/></svg>',
+    li: '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1v5.45h-4v-4.83c0-1.15-.02-2.63-1.6-2.63-1.6 0-1.85 1.25-1.85 2.55v4.91h-4v-11Z"/></svg>'
+  };
+  var C = S.contact;
+  var handle = function (url) { return String(url || "").replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""); };
+
+  /* header links */
+  var top = "";
+  if (C.telegram) top += '<a class="btn solid" target="_blank" rel="noopener" href="' + esc(C.telegram) + '">' + I.tg + "Telegram</a>";
+  if (C.x) top += '<a class="btn" target="_blank" rel="noopener" href="' + esc(C.x) + '" aria-label="X">' + I.x + "</a>";
+  if (C.linkedin) top += '<a class="btn" target="_blank" rel="noopener" href="' + esc(C.linkedin) + '" aria-label="LinkedIn">' + I.li + "</a>";
+  $("topLinks").innerHTML = top;
+
+  /* market */
+  $("dataDate").textContent = S.dataDate ? "close of " + dstr(S.dataDate) : "";
+  $("moodWord").textContent = S.mood || "—";
+  $("moodWord").className = "mood-word " + (S.mood || "");
+  $("moodText").textContent = {
+    Bearish: "Nifty and Bank Nifty are in a downtrend on the bigger charts. Few stocks look strong, so the focus list is short.",
+    Bullish: "Nifty and Bank Nifty are in an uptrend on the monthly and weekly charts. More stocks look strong.",
+    Neutral: "The bigger charts disagree. Only stock-specific strength for now."
+  }[S.mood] || "";
+  $("indices").innerHTML = S.indices.map(function (ix) {
+    return '<div class="card index"><div class="index-head"><span class="index-name">' + esc(ix.name) + '</span><span class="num">' + fmt(ix.close) +
+      ' <span class="' + cls(ix.change) + '">' + (ix.change > 0 ? "+" : "") + ix.change.toFixed(2) + "%</span></span></div>" +
+      '<div class="chips">' + chip("Monthly", ix.monthly) + chip("Weekly", ix.weekly) + chip("Daily", ix.daily) + "</div></div>";
+  }).join("");
+
+  /* stocks */
+  $("stocks").innerHTML = S.stocks.length ? S.stocks.map(function (s) {
+    return '<article class="card stock"><div class="stock-head"><div><div class="sym">' + esc(s.symbol) + '</div><div class="sub">' + esc(s.name) + "</div></div>" +
+      '<div class="px"><div class="label">Close</div><div class="num">₹' + fmt(s.close) + "</div></div></div>" +
+      '<span class="tag">' + esc(s.horizon) + "</span>" +
+      '<div class="chips">' + chip("M", s.monthly) + chip("W", s.weekly) + chip("D", s.daily) + chip("4H", s.h4) + chip("1H", s.h1) + "</div>" +
+      '<p class="note">' + esc(s.note) + "</p></article>";
+  }).join("") : '<div class="empty">No stock looks strong enough today. In a falling market, waiting is also a decision.</div>';
+
+  /* studies: data.js list, plus a published Google Sheet if configured */
+  function renderStudies(list) {
+    list = list.filter(function (p) { return p && (p.stock || p.title); })
+      .sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
+    $("studyList").innerHTML = list.length ? list.map(function (p) {
+      var lv = "";
+      [["Support", p.support], ["Resistance", p.resistance]].forEach(function (x) {
+        if (x[1]) lv += '<div class="lv"><div class="label">' + x[0] + '</div><div class="num">' + esc(x[1]) + "</div></div>";
+      });
+      return '<article class="card study"><div class="meta"><span class="sym">' + esc(p.stock) + '</span><span class="label">' + esc(p.date ? dstr(p.date) : "") + (p.timeframe ? " · " + esc(p.timeframe) : "") + "</span></div>" +
+        (p.title ? "<h3>" + esc(p.title) + "</h3>" : "") + (lv ? '<div class="levels">' + lv + "</div>" : "") +
+        (p.study ? "<p>" + esc(p.study) + "</p>" : "") +
+        (p.chart && /^https?:\/\//.test(p.chart) ? '<a href="' + esc(p.chart) + '" target="_blank" rel="noopener">View chart</a>' : "") + "</article>";
+    }).join("") : '<div class="empty">No studies posted yet. New chart studies will appear here.</div>';
+  }
+  function parseCSV(t) {
+    var rows = [], row = [], f = "", q = false;
+    for (var i = 0; i < t.length; i++) {
+      var c = t[i];
+      if (q) { if (c === '"' && t[i + 1] === '"') { f += '"'; i++; } else if (c === '"') q = false; else f += c; }
+      else if (c === '"') q = true; else if (c === ",") { row.push(f); f = ""; }
+      else if (c === "\n") { row.push(f); rows.push(row); row = []; f = ""; } else if (c !== "\r") f += c;
+    }
+    if (f || row.length) { row.push(f); rows.push(row); }
+    var head = (rows.shift() || []).map(function (h) { return h.trim().toLowerCase(); });
+    return rows.map(function (r) { var o = {}; head.forEach(function (h, k) { o[h] = (r[k] || "").trim(); }); return o; });
+  }
+  renderStudies(S.studies.slice());
+  if (S.studiesSheetCsv) {
+    fetch(S.studiesSheetCsv).then(function (r) { return r.text(); }).then(function (t) {
+      var rows = parseCSV(t).map(function (o) {
+        var d = o.date || "", m = d.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+        if (m) d = m[3] + "-" + ("0" + m[2]).slice(-2) + "-" + ("0" + m[1]).slice(-2);
+        return { date: d, stock: o.stock, title: o.title, timeframe: o.timeframe, support: o.support, resistance: o.resistance, study: o.study, chart: o.chart };
+      });
+      renderStudies(S.studies.concat(rows));
+    }).catch(function () {});
+  }
+
+  /* fii / dii */
+  var F = S.fiiDii;
+  function flows(view) {
+    if (!F) { $("flowCards").innerHTML = ""; $("flowTable").innerHTML = ""; $("flowSrc").textContent = "FII/DII data is not available yet."; return; }
+    var rows, label;
+    if (view === "daily") { rows = F.daily.map(function (r) { return { k: dstr(r.date, { day: "numeric", month: "short" }), fii: r.fii, dii: r.dii }; }); label = "Date"; }
+    else if (view === "monthly") { rows = F.monthly.slice().reverse().map(function (r) { return { k: dstr(r.month + "-01", { month: "short", year: "numeric" }) + (r.partial ? " (so far)" : ""), fii: r.fii, dii: r.dii }; }); label = "Month"; }
+    else {
+      var years = {};
+      F.monthly.forEach(function (r) { var y = r.month.slice(0, 4); years[y] = years[y] || { fii: 0, dii: 0, partial: false }; years[y].fii += r.fii; years[y].dii += r.dii; if (r.partial) years[y].partial = true; });
+      (F.yearly || []).forEach(function (r) { if (!years[r.year]) years[r.year] = { fii: r.fii, dii: r.dii }; });
+      rows = Object.keys(years).sort().reverse().map(function (y) { return { k: y + (years[y].partial ? " (so far)" : ""), fii: years[y].fii, dii: years[y].dii }; });
+      label = "Year";
+    }
+    var d0 = view === "daily" ? 2 : 0;
+    var last = rows[0] || { fii: 0, dii: 0, k: "" };
+    var name = { daily: "Latest day", monthly: "This month", yearly: "This year" }[view];
+    $("flowCards").innerHTML = [["FII", last.fii], ["DII", last.dii], ["FII + DII", last.fii + last.dii]].map(function (x) {
+      return '<div class="card"><div class="label">' + x[0] + " · " + name + " · " + esc(last.k) + '</div><div class="val ' + cls(x[1]) + '">' + signed(x[1], d0) + "</div></div>";
+    }).join("");
+    var max = Math.max.apply(null, rows.map(function (r) { return Math.max(Math.abs(r.fii), Math.abs(r.dii)); }).concat([1]));
+    var bar = function (v, c) { var w = Math.abs(v) / max * 50; return '<span class="' + c + (c === "f" && v > 0 ? " p" : "") + '" style="width:' + w + "%;left:" + (v >= 0 ? 50 : 50 - w) + '%"></span>'; };
+    $("flowTable").innerHTML = "<thead><tr><th>" + label + "</th><th>FII</th><th>DII</th><th>Net</th><th>FII vs DII</th></tr></thead><tbody>" +
+      rows.map(function (r) {
+        return "<tr><td>" + esc(r.k) + '</td><td class="num ' + cls(r.fii) + '">' + signed(r.fii, d0) + '</td><td class="num ' + cls(r.dii) + '">' + signed(r.dii, d0) +
+          '</td><td class="num ' + cls(r.fii + r.dii) + '">' + signed(r.fii + r.dii, d0) + '</td><td class="bar-cell"><div class="bar" title="FII">' + bar(r.fii, "f") +
+          '</div><div class="bar" title="DII" style="margin-top:4px">' + bar(r.dii, "d") + "</div></td></tr>";
+      }).join("") + "</tbody>";
+    $("flowSrc").textContent = "Top bar FII (red selling, green buying), lower bar DII. " + (F.unit ? F.unit + ". " : "") + (F.source ? "Source: " + F.source + ". " : "") + (F.asOf ? "As of " + dstr(F.asOf) + "." : "");
+  }
+  Array.prototype.forEach.call(document.querySelectorAll(".seg button"), function (b) {
+    b.addEventListener("click", function () {
+      Array.prototype.forEach.call(document.querySelectorAll(".seg button"), function (x) { x.setAttribute("aria-pressed", String(x === b)); });
+      flows(b.dataset.view);
+    });
+  });
+  flows("daily");
+
+  /* teaser cards on the market tab */
+  var lastFlow = F && F.daily && F.daily[0];
+  $("teaser").innerHTML =
+    '<button class="card" data-go="focus"><div class="label">Stocks in focus</div><div class="big">' + S.stocks.length + " stock" + (S.stocks.length === 1 ? "" : "s") + '</div><div class="sub">' + esc(S.stocks.map(function (s) { return s.symbol; }).join(", ") || "None today") + "</div></button>" +
+    (lastFlow ? '<button class="card" data-go="flows"><div class="label">FII / DII · ' + esc(dstr(lastFlow.date, { day: "numeric", month: "short" })) + '</div><div class="big"><span class="' + cls(lastFlow.fii) + '">' + signed(lastFlow.fii, 0) + '</span> / <span class="' + cls(lastFlow.dii) + '">' + signed(lastFlow.dii, 0) + '</span></div><div class="sub">₹ crore, FII / DII net</div></button>' : "") +
+    '<button class="card" data-go="contact"><div class="label">Daily updates</div><div class="big">Telegram</div><div class="sub">@IndianStockChartist</div></button>';
+
+  /* contact */
+  var cards = [
+    ["Telegram channel", C.telegram, I.tg, "Daily market mood and stocks in focus."],
+    ["Telegram group", C.telegramGroup, I.tg, "Discuss charts with other members."],
+    ["X (Twitter)", C.x, I.x, "Quick market updates."],
+    ["LinkedIn", C.linkedin, I.li, "Professional profile."]
+  ].filter(function (c) { return c[1]; });
+  $("contactList").innerHTML = cards.map(function (c) {
+    return '<a class="card" target="_blank" rel="noopener" href="' + esc(c[1]) + '"><span class="icon">' + c[2] + "</span><h3>" + c[0] + '</h3><span class="handle">' + esc(handle(c[1])) + '</span><span class="sub">' + c[3] + "</span></a>";
+  }).join("");
+
+  $("updated").textContent = S.updated ? "Last updated " + S.updated + "." : "";
+
+  /* tabs with #hash */
+  var tabs = ["market", "focus", "studies", "flows", "contact"];
+  function show(name, push) {
+    if (tabs.indexOf(name) < 0) name = "market";
+    tabs.forEach(function (t) { $("p-" + t).hidden = t !== name; $("tab-" + t).setAttribute("aria-selected", String(t === name)); });
+    if (push && location.hash !== "#" + name) history.replaceState(null, "", "#" + name);
+    window.scrollTo(0, 0);
+  }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-tab],[data-go]"), function (el) {
+    el.addEventListener("click", function () { show(el.dataset.tab || el.dataset.go, true); });
+  });
+  window.addEventListener("hashchange", function () { show(location.hash.slice(1)); });
+  show(location.hash.slice(1));
+})();
+</script>
+</body>
+</html>
