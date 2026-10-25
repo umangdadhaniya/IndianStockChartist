@@ -8,7 +8,7 @@ window.SITE = {
     "x": "https://x.com/UmangDadhaniya3",
     "linkedin": "https://www.linkedin.com/in/umang-dadhaniya-958640150/"
   },
-  "studiesSheetCsv": "",
+  "studiesSheetCsv": "https://docs.google.com/spreadsheets/d/e/2PACX-1vRV3yg9tmEkRBVJeiV0CP5Gz49Z65T0v53ue8RTxo9BvI60kHI-UfA94fXb8jDdxTnr1gfsHR8xR1K3/pub?gid=0&single=true&output=csv",
   "mood": "Bearish",
   "indices": [
     {
