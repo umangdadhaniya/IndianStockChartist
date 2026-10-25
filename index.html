@@ -123,6 +123,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .lv .label { font-size: 10px; }
 .lv .num { font-size: 14px; }
 .study p { margin: 0; white-space: pre-line; }
+.chart { display: block; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: var(--paper); }
+.chart img { display: block; width: 100%; height: auto; }
 .study .meta { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 
 /* fii dii */
@@ -298,6 +300,16 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
   }).join("") : '<div class="empty">No stock looks strong enough today. In a falling market, waiting is also a decision.</div>';
 
   /* studies: data.js list, plus a published Google Sheet if configured */
+  /* chart: TradingView snapshot link (tradingview.com/x/ID) shows as an image; direct image links too */
+  function chartHtml(url) {
+    url = String(url || "").trim();
+    if (!/^https?:\/\//.test(url)) return "";
+    var img = "", m = url.match(/tradingview\.com\/x\/([A-Za-z0-9]+)/);
+    if (m) img = "https://s3.tradingview.com/snapshots/" + m[1].charAt(0).toLowerCase() + "/" + m[1] + ".png";
+    else if (/\.(png|jpe?g|webp|gif)(\?.*)?$/i.test(url)) img = url;
+    if (!img) return '<a href="' + esc(url) + '" target="_blank" rel="noopener">View chart</a>';
+    return '<a class="chart" href="' + esc(url) + '" target="_blank" rel="noopener"><img src="' + esc(img) + '" alt="Chart" loading="lazy" onerror="var a=this.parentNode;a.className=\'\';a.textContent=\'View chart\'"></a>';
+  }
   function renderStudies(list) {
     list = list.filter(function (p) { return p && (p.stock || p.title); })
       .sort(function (a, b) { return String(b.date).localeCompare(String(a.date)); });
@@ -309,7 +321,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
       return '<article class="card study"><div class="meta"><span class="sym">' + esc(p.stock) + '</span><span class="label">' + esc(p.date ? dstr(p.date) : "") + (p.timeframe ? " · " + esc(p.timeframe) : "") + "</span></div>" +
         (p.title ? "<h3>" + esc(p.title) + "</h3>" : "") + (lv ? '<div class="levels">' + lv + "</div>" : "") +
         (p.study ? "<p>" + esc(p.study) + "</p>" : "") +
-        (p.chart && /^https?:\/\//.test(p.chart) ? '<a href="' + esc(p.chart) + '" target="_blank" rel="noopener">View chart</a>' : "") + "</article>";
+        chartHtml(p.chart) + "</article>";
     }).join("") : '<div class="empty">No studies posted yet. New chart studies will appear here.</div>';
   }
   function parseCSV(t) {
