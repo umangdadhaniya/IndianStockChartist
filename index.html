@@ -115,6 +115,15 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .note { margin: 0; font-size: 15px; }
 .empty { background: var(--card); border: 1px dashed var(--line); border-radius: 10px; padding: 24px; color: var(--muted); }
 
+/* strong stocks */
+.fund { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.fund > div { border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; background: var(--paper); min-width: 0; }
+.fund .label { font-size: 10px; letter-spacing: .04em; }
+.fund .num { font-size: 15px; font-weight: 500; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag.cap { border-style: solid; border-color: var(--line); color: var(--muted); }
+.badge { justify-self: start; font: 600 12px/1 var(--body); padding: 6px 10px; border-radius: 999px; background: var(--up); color: var(--card); }
+
 /* studies */
 .study { display: grid; gap: 12px; align-content: start; }
 .study h3 { font-size: 21px; font-weight: 700; font-stretch: 88%; }
@@ -183,6 +192,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
   <div class="wrap tabs" role="tablist" aria-label="Sections">
     <button class="tab" role="tab" id="tab-market" data-tab="market">Market</button>
     <button class="tab" role="tab" id="tab-focus" data-tab="focus">Stocks in focus</button>
+    <button class="tab" role="tab" id="tab-strong" data-tab="strong">Strong stocks</button>
     <button class="tab" role="tab" id="tab-studies" data-tab="studies">My studies</button>
     <button class="tab" role="tab" id="tab-flows" data-tab="flows">FII / DII</button>
     <button class="tab" role="tab" id="tab-contact" data-tab="contact">Contact</button>
@@ -209,6 +219,16 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
       <div class="legend" aria-label="Legend"><span class="chip Strong">Strong</span><span class="chip Bull">Bull</span><span class="chip Weak">Weak</span><span class="chip Bear">Bear</span></div>
     </div>
     <div class="grid" id="stocks"></div>
+  </section>
+
+  <section class="wrap panel" id="p-strong" role="tabpanel" aria-labelledby="tab-strong" hidden>
+    <div class="panel-head">
+      <div><div class="label">Updated on market days</div><h2>Strong stocks</h2>
+        <p>Stocks where both the business and the chart look strong today: steady returns on capital, growing sales and profit, low debt and high promoter holding, plus an uptrend on the bigger charts.</p></div>
+      <div class="legend" aria-label="Legend"><span class="chip Strong">Strong</span><span class="chip Bull">Bull</span><span class="chip Weak">Weak</span><span class="chip Bear">Bear</span></div>
+    </div>
+    <div class="grid" id="strongList"></div>
+    <p class="src">ROE and ROCE are 3-year averages. Sales and profit growth are for the latest financial year. Figures from company filings; check before you use them.</p>
   </section>
 
   <section class="wrap panel" id="p-studies" role="tabpanel" aria-labelledby="tab-studies" hidden>
@@ -252,7 +272,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
 <script>
 (function () {
   var S = window.SITE || {};
-  S.indices = S.indices || []; S.stocks = S.stocks || []; S.studies = S.studies || []; S.contact = S.contact || {};
+  S.indices = S.indices || []; S.stocks = S.stocks || []; S.studies = S.studies || []; S.strong = S.strong || []; S.contact = S.contact || {};
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
   var fmt = function (n, d) { return Number(n).toLocaleString("en-IN", { maximumFractionDigits: d == null ? 2 : d, minimumFractionDigits: d == null ? 2 : d }); };
@@ -298,6 +318,22 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
       '<div class="chips">' + chip("M", s.monthly) + chip("W", s.weekly) + chip("D", s.daily) + chip("4H", s.h4) + chip("1H", s.h1) + "</div>" +
       '<p class="note">' + esc(s.note) + "</p></article>";
   }).join("") : '<div class="empty">No stock looks strong enough today. In a falling market, waiting is also a decision.</div>';
+
+  /* strong stocks: business and chart both strong */
+  var pct = function (v) { return v == null ? "n/a" : fmt(v, 1) + "%"; };
+  var crore = function (v) { return v == null ? "" : "₹" + fmt(v, 0) + " Cr"; };
+  $("strongList").innerHTML = S.strong.length ? S.strong.map(function (s) {
+    var f = s.fund || {};
+    var cells = [["ROE 3Y", pct(f.roe3)], ["ROCE 3Y", pct(f.roce3)], ["Debt / Equity", f.de == null ? "n/a" : fmt(f.de, 2)],
+      ["Sales growth", pct(f.salesG)], ["Profit growth", pct(f.profitG)], ["Promoter", pct(f.promoter)]];
+    return '<article class="card stock"><div class="stock-head"><div><div class="sym">' + esc(s.symbol) + '</div><div class="sub">' + esc(s.name) + "</div></div>" +
+      '<div class="px"><div class="label">Close</div><div class="num">₹' + fmt(s.close) + "</div></div></div>" +
+      '<div class="tags"><span class="badge">Business + chart strong</span><span class="tag">' + esc(s.horizon) + "</span>" +
+      (s.size ? '<span class="tag cap" title="' + esc(crore(s.mcapCr)) + '">' + esc(s.size) + "</span>" : "") + "</div>" +
+      '<div class="fund">' + cells.map(function (c) { return '<div><div class="label">' + c[0] + '</div><div class="num">' + esc(c[1]) + "</div></div>"; }).join("") + "</div>" +
+      '<div class="chips">' + chip("M", s.monthly) + chip("W", s.weekly) + chip("D", s.daily) + chip("4H", s.h4) + chip("1H", s.h1) + "</div>" +
+      '<p class="note">' + esc(s.note) + "</p></article>";
+  }).join("") : '<div class="empty">No stock passes both the business and the chart checks today. Strong businesses usually show up here once the market trend turns up.</div>';
 
   /* studies: data.js list, plus a published Google Sheet if configured */
   /* chart: TradingView snapshot link (tradingview.com/x/ID) shows as an image; direct image links too */
@@ -391,6 +427,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
   $("teaser").innerHTML =
     '<button class="card" data-go="focus"><div class="label">Stocks in focus</div><div class="big">' + S.stocks.length + " stock" + (S.stocks.length === 1 ? "" : "s") + '</div><div class="sub">' + esc(S.stocks.map(function (s) { return s.symbol; }).join(", ") || "None today") + "</div></button>" +
     (lastFlow ? '<button class="card" data-go="flows"><div class="label">FII / DII · ' + esc(dstr(lastFlow.date, { day: "numeric", month: "short" })) + '</div><div class="big"><span class="' + cls(lastFlow.fii) + '">' + signed(lastFlow.fii, 0) + '</span> / <span class="' + cls(lastFlow.dii) + '">' + signed(lastFlow.dii, 0) + '</span></div><div class="sub">₹ crore, FII / DII net</div></button>' : "") +
+    '<button class="card" data-go="strong"><div class="label">Strong stocks</div><div class="big">' + S.strong.length + " stock" + (S.strong.length === 1 ? "" : "s") + '</div><div class="sub">' + esc(S.strong.map(function (s) { return s.symbol; }).join(", ") || "None today") + "</div></button>" +
     '<button class="card" data-go="contact"><div class="label">Daily updates</div><div class="big">Telegram</div><div class="sub">@IndianStockChartist</div></button>';
 
   /* contact */
@@ -407,7 +444,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
   $("updated").textContent = S.updated ? "Last updated " + S.updated + "." : "";
 
   /* tabs with #hash */
-  var tabs = ["market", "focus", "studies", "flows", "contact"];
+  var tabs = ["market", "focus", "strong", "studies", "flows", "contact"];
   function show(name, push) {
     if (tabs.indexOf(name) < 0) name = "market";
     tabs.forEach(function (t) { $("p-" + t).hidden = t !== name; $("tab-" + t).setAttribute("aria-selected", String(t === name)); });
