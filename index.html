@@ -115,6 +115,17 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .note { margin: 0; font-size: 15px; }
 .empty { background: var(--card); border: 1px dashed var(--line); border-radius: 10px; padding: 24px; color: var(--muted); }
 
+/* ticker strip */
+.ticker { background: var(--ink); color: var(--paper); overflow: hidden; white-space: nowrap; font: 500 13px/1 var(--mono); }
+.ticker-track { display: inline-flex; padding-block: 9px; animation: tick 60s linear infinite; will-change: transform; }
+.ticker:hover .ticker-track, .ticker:focus-within .ticker-track { animation-play-state: paused; }
+.ticker-item { display: inline-flex; align-items: center; gap: 8px; padding-inline: 22px; }
+.ticker-item::after { content: "◆"; font-size: 8px; opacity: .45; margin-left: 22px; }
+.ticker .hi { color: var(--flat-soft); font-weight: 600; }
+.ticker .up { color: var(--up-soft); } .ticker .dn { color: var(--down-soft); }
+@keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .ticker { overflow-x: auto; } .ticker-track { animation: none; } }
+
 /* strong stocks */
 .fund { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .fund > div { border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; background: var(--paper); min-width: 0; }
@@ -172,6 +183,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
 </style>
 </head>
 <body>
+<div class="ticker" id="ticker" role="marquee" aria-label="Site updates and market summary"></div>
 <header class="wrap top">
   <a class="brand" href="#market">
     <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
@@ -442,6 +454,24 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
   }).join("");
 
   $("updated").textContent = S.updated ? "Last updated " + S.updated + "." : "";
+
+  /* ticker strip: right to left, loops forever, pauses on hover */
+  (function () {
+    var items = ['<span class="hi">Site updates every market day (Mon–Fri) after 10:30 AM IST</span>'];
+    if (S.updated) items.push("Last updated " + esc(S.updated));
+    if (S.mood) items.push("Market mood: <b>" + esc(S.mood) + "</b>");
+    S.indices.forEach(function (ix) {
+      items.push(esc(ix.name) + " " + fmt(ix.close) + ' <span class="' + (ix.change >= 0 ? "up" : "dn") + '">' + (ix.change > 0 ? "+" : "") + ix.change.toFixed(2) + "%</span>");
+    });
+    if (lastFlow) items.push("FII " + '<span class="' + (lastFlow.fii >= 0 ? "up" : "dn") + '">' + signed(lastFlow.fii, 0) + "</span> · DII " +
+      '<span class="' + (lastFlow.dii >= 0 ? "up" : "dn") + '">' + signed(lastFlow.dii, 0) + "</span> ₹ Cr (" + esc(dstr(lastFlow.date, { day: "numeric", month: "short" })) + ")");
+    items.push("Stocks in focus: " + S.stocks.length);
+    items.push("Strong stocks: " + (S.strong.length ? esc(S.strong.map(function (s) { return s.symbol; }).join(", ")) : "none today"));
+    items.push("No update on weekends and NSE holidays");
+    items.push("Chart study only, not buy or sell advice");
+    var one = items.map(function (t) { return '<span class="ticker-item">' + t + "</span>"; }).join("");
+    $("ticker").innerHTML = '<div class="ticker-track">' + one + '<span aria-hidden="true" style="display:inline-flex">' + one + "</span></div>";
+  })();
 
   /* tabs with #hash */
   var tabs = ["market", "focus", "strong", "studies", "flows", "contact"];
