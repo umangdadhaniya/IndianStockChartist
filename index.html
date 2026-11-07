@@ -172,6 +172,27 @@ td.bar-cell { width: 34%; }
 .bar .d { background: var(--accent); top: 0; opacity: .55; }
 .src { font-size: 13px; color: var(--muted); margin-top: 10px; }
 
+/* trading blog */
+.post { display: grid; gap: 14px; padding: 22px clamp(16px, 3vw, 28px); }
+.post h3 { font-size: clamp(24px, 3.4vw, 32px); font-weight: 800; font-stretch: 82%; line-height: 1.1; }
+.post h4 { font: 700 19px/1.2 var(--display); font-stretch: 90%; margin: 10px 0 0; }
+.post p { margin: 0; max-width: 72ch; }
+.post mark { background: var(--flat-soft); color: var(--ink); padding: 0 3px; border-radius: 3px; box-shadow: inset 0 -2px 0 var(--flat); }
+.keys { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
+.key { border: 1px solid var(--line); border-left-width: 4px; border-radius: 8px; padding: 12px 14px; background: var(--paper); display: grid; gap: 6px; align-content: start; }
+.key.good { border-left-color: var(--up); } .key.warn { border-left-color: var(--down); }
+.key .big { font: 800 24px/1.1 var(--display); font-stretch: 80%; }
+.key p { font-size: 14px; }
+table.bt { min-width: 600px; }
+table.bt td { white-space: nowrap; }
+table.bt td:nth-child(2), table.bt td:nth-child(4) { width: 26%; text-align: left; }
+.mbar + .num { display: inline-block; width: 44px; text-align: right; }
+.mbar { display: inline-block; vertical-align: middle; width: calc(100% - 52px); height: 10px; background: var(--grid); border-radius: 2px; margin-right: 8px; }
+.mbar span { display: block; height: 100%; background: var(--accent); border-radius: 2px; opacity: .75; }
+.mbar.sl span { background: var(--down); }
+tr.hl-good td { background: var(--up-soft); } tr.hl-bad td { background: var(--down-soft); }
+.take { margin: 0; padding-left: 20px; display: grid; gap: 8px; max-width: 76ch; }
+
 /* contact */
 .contact { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 14px; }
 .contact a.card { text-decoration: none; color: var(--ink); display: grid; gap: 10px; }
@@ -212,6 +233,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
     <button class="tab" role="tab" id="tab-strong" data-tab="strong">Strong stocks</button>
     <button class="tab" role="tab" id="tab-studies" data-tab="studies">My studies</button>
     <button class="tab" role="tab" id="tab-flows" data-tab="flows">FII / DII</button>
+    <button class="tab" role="tab" id="tab-blog" data-tab="blog">Trading blog</button>
     <button class="tab" role="tab" id="tab-contact" data-tab="contact">Contact</button>
   </div>
 </div>
@@ -269,6 +291,57 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
     <div class="flow-cards" id="flowCards"></div>
     <div class="table-wrap"><table id="flowTable"></table></div>
     <p class="src" id="flowSrc"></p>
+  </section>
+
+  <section class="wrap panel" id="p-blog" role="tabpanel" aria-labelledby="tab-blog" hidden>
+    <div class="panel-head">
+      <div><div class="label">Trading blog</div><h2>Trading blog</h2>
+        <p>Data studies on when and how to trade. Short reads, real numbers.</p></div>
+    </div>
+    <article class="card post">
+      <div class="label">7 Nov 2026 · Bitcoin · 4H and 2H · 10 years of data</div>
+      <h3>When to trade Bitcoin: the busiest hours are also the stop-loss trap</h3>
+      <p>I studied ten years of Bitcoin price data (Nov 2016 to Nov 2026, Bitstamp, about 87,000 hourly bars) and grouped it into 4-hour and 2-hour candles by Indian time. For each candle I measured trading volume, the average move, and how often a simple breakout trade got stopped out. The test: buy a break of the previous candle's high (or sell a break of its low), stop-loss 1 ATR away, target twice the risk.</p>
+      <div class="keys">
+        <div class="key warn"><div class="label">Busiest, and most stops hit</div><div class="big">17:30–21:30 IST</div><p>US data at 19:00 and the US open at 20:00. Highest volume (142) but <mark>1 in 6 breakout trades is stopped out within 4 hours</mark>.</p></div>
+        <div class="key good"><div class="label">Best balance</div><div class="big">After 21:30 IST</div><p>The US-open spike is over, direction is set, volume is still above average. <mark>+0.09R per trade</mark> when trading with the trend.</p></div>
+        <div class="key good"><div class="label">Fewest stops hit</div><div class="big">09:30–13:30 IST</div><p>Quietest volume, smallest moves, but <mark>only 5% of stops hit within 4 hours</mark> and the best result (+0.11R).</p></div>
+        <div class="key warn"><div class="label">Avoid</div><div class="big">01:30–05:30 IST</div><p>The only window with a <mark>negative result</mark> on both 4H and 2H charts.</p></div>
+      </div>
+      <h4>4-hour candles</h4>
+      <div class="table-wrap"><table class="bt"><thead><tr><th>Candle (IST)</th><th>Volume</th><th>Avg range</th><th>Stop hit inside candle</th><th>Result with trend, 1:2</th></tr></thead><tbody>
+<tr class="hl-bad"><td>01:30–05:30</td><td><div class="mbar"><span style="width:68%"></span></div><span class="num">97</span></td><td class="num">1.93%</td><td><div class="mbar sl"><span style="width:60%"></span></div><span class="num">10.5%</span></td><td class="num neg">−0.07R</td></tr>
+<tr><td>05:30–09:30</td><td><div class="mbar"><span style="width:56%"></span></div><span class="num">79</span></td><td class="num">1.86%</td><td><div class="mbar sl"><span style="width:43%"></span></div><span class="num">7.5%</span></td><td class="num pos">+0.05R</td></tr>
+<tr class="hl-good"><td>09:30–13:30</td><td><div class="mbar"><span style="width:51%"></span></div><span class="num">72</span></td><td class="num">1.61%</td><td><div class="mbar sl"><span style="width:30%"></span></div><span class="num">5.3%</span></td><td class="num pos">+0.11R</td></tr>
+<tr><td>13:30–17:30</td><td><div class="mbar"><span style="width:65%"></span></div><span class="num">92</span></td><td class="num">1.80%</td><td><div class="mbar sl"><span style="width:43%"></span></div><span class="num">7.6%</span></td><td class="num pos">+0.08R</td></tr>
+<tr class="hl-bad"><td>17:30–21:30</td><td><div class="mbar"><span style="width:100%"></span></div><span class="num">142</span></td><td class="num">2.30%</td><td><div class="mbar sl"><span style="width:100%"></span></div><span class="num">17.5%</span></td><td class="num pos">+0.04R</td></tr>
+<tr class="hl-good"><td>21:30–01:30</td><td><div class="mbar"><span style="width:83%"></span></div><span class="num">118</span></td><td class="num">2.02%</td><td><div class="mbar sl"><span style="width:61%"></span></div><span class="num">10.7%</span></td><td class="num pos">+0.09R</td></tr>
+</tbody></table></div>
+      <h4>2-hour candles</h4>
+      <div class="table-wrap"><table class="bt"><thead><tr><th>Candle (IST)</th><th>Volume</th><th>Avg range</th><th>Stop hit inside candle</th><th>Result with trend, 1:2</th></tr></thead><tbody>
+<tr class="hl-bad"><td>01:30–03:30</td><td><div class="mbar"><span style="width:69%"></span></div><span class="num">107</span></td><td class="num">1.39%</td><td><div class="mbar sl"><span style="width:54%"></span></div><span class="num">8.6%</span></td><td class="num neg">−0.11R</td></tr>
+<tr><td>03:30–05:30</td><td><div class="mbar"><span style="width:56%"></span></div><span class="num">87</span></td><td class="num">1.32%</td><td><div class="mbar sl"><span style="width:43%"></span></div><span class="num">6.9%</span></td><td class="num pos">+0.07R</td></tr>
+<tr><td>05:30–07:30</td><td><div class="mbar"><span style="width:56%"></span></div><span class="num">88</span></td><td class="num">1.40%</td><td><div class="mbar sl"><span style="width:52%"></span></div><span class="num">8.2%</span></td><td class="num pos">+0.01R</td></tr>
+<tr class="hl-good"><td>07:30–09:30</td><td><div class="mbar"><span style="width:45%"></span></div><span class="num">70</span></td><td class="num">1.17%</td><td><div class="mbar sl"><span style="width:26%"></span></div><span class="num">4.1%</span></td><td class="num pos">+0.15R</td></tr>
+<tr><td>09:30–11:30</td><td><div class="mbar"><span style="width:42%"></span></div><span class="num">66</span></td><td class="num">1.10%</td><td><div class="mbar sl"><span style="width:19%"></span></div><span class="num">3.0%</span></td><td class="num pos">+0.10R</td></tr>
+<tr><td>11:30–13:30</td><td><div class="mbar"><span style="width:50%"></span></div><span class="num">78</span></td><td class="num">1.15%</td><td><div class="mbar sl"><span style="width:32%"></span></div><span class="num">5.1%</span></td><td class="num pos">+0.11R</td></tr>
+<tr class="hl-good"><td>13:30–15:30</td><td><div class="mbar"><span style="width:59%"></span></div><span class="num">92</span></td><td class="num">1.25%</td><td><div class="mbar sl"><span style="width:35%"></span></div><span class="num">5.5%</span></td><td class="num pos">+0.15R</td></tr>
+<tr><td>15:30–17:30</td><td><div class="mbar"><span style="width:60%"></span></div><span class="num">93</span></td><td class="num">1.25%</td><td><div class="mbar sl"><span style="width:42%"></span></div><span class="num">6.7%</span></td><td class="num pos">+0.07R</td></tr>
+<tr><td>17:30–19:30</td><td><div class="mbar"><span style="width:82%"></span></div><span class="num">128</span></td><td class="num">1.51%</td><td><div class="mbar sl"><span style="width:83%"></span></div><span class="num">13.2%</span></td><td class="num pos">+0.05R</td></tr>
+<tr class="hl-bad"><td>19:30–21:30</td><td><div class="mbar"><span style="width:100%"></span></div><span class="num">156</span></td><td class="num">1.66%</td><td><div class="mbar sl"><span style="width:100%"></span></div><span class="num">15.9%</span></td><td class="num pos">+0.12R</td></tr>
+<tr><td>21:30–23:30</td><td><div class="mbar"><span style="width:79%"></span></div><span class="num">124</span></td><td class="num">1.48%</td><td><div class="mbar sl"><span style="width:75%"></span></div><span class="num">12.0%</span></td><td class="num pos">+0.02R</td></tr>
+<tr><td>23:30–01:30</td><td><div class="mbar"><span style="width:72%"></span></div><span class="num">112</span></td><td class="num">1.34%</td><td><div class="mbar sl"><span style="width:55%"></span></div><span class="num">8.7%</span></td><td class="num neg">−0.01R</td></tr>
+</tbody></table></div>
+      <p class="src">Volume: 100 = average share of the day's volume. Stop hit inside candle: share of breakout trades whose 1 ATR stop was hit before that candle closed. Result: average profit in R (risk units) of trend-following breakouts (price on the right side of the 50 EMA) with a 2R target, held up to 48 hours. Green rows = best windows, red rows = most stops hit or a negative result.</p>
+      <h4>What I take from this</h4>
+      <ul class="take">
+        <li><strong>High volume is not the same as easy trading.</strong> The US session moves the most, but it also shakes out the most stops. <mark>Don't enter in the first 15–30 minutes after 19:00 or 20:00 IST.</mark> Let the first candle close, then trade its break.</li>
+        <li><strong>Tight stops lose.</strong> A 0.5 ATR stop was hit within 4 hours in <mark>42% of trades</mark>. A 1 ATR stop: 10%.</li>
+        <li><strong>The best stop was below the previous 4H candle's low</strong> (above its high for shorts), and only in the direction of the 4H trend. That combination returned about <mark>+0.10R per trade</mark>. Against the trend: −0.10R.</li>
+        <li><strong>Weekends are thin.</strong> Saturday and Sunday trade about half the volume of weekdays, so breakouts fail more often.</li>
+      </ul>
+      <p class="src">These edges are small (a few tenths of R) and exclude fees and slippage. This is a timing and risk filter, not a complete trading system. Past patterns do not guarantee future results.</p>
+    </article>
   </section>
 
   <section class="wrap panel" id="p-contact" role="tabpanel" aria-labelledby="tab-contact" hidden>
@@ -502,13 +575,14 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
     items.push("Stocks in focus: " + S.stocks.length);
     items.push("Strong stocks: " + (S.strong.length ? esc(S.strong.map(function (s) { return s.symbol; }).join(", ")) : "none today"));
     items.push("No update on weekends and NSE holidays");
+    items.push('New on the Trading blog: when to trade Bitcoin, 10 years of 4H and 2H data');
     items.push("Chart study only, not buy or sell advice");
     var one = items.map(function (t) { return '<span class="ticker-item">' + t + "</span>"; }).join("");
     $("ticker").innerHTML = '<div class="ticker-track">' + one + '<span aria-hidden="true" style="display:inline-flex">' + one + "</span></div>";
   })();
 
   /* tabs with #hash */
-  var tabs = ["market", "focus", "strong", "studies", "flows", "contact"];
+  var tabs = ["market", "focus", "strong", "studies", "flows", "blog", "contact"];
   function show(name, push) {
     if (name.indexOf("s-") === 0) { tabs.forEach(function (t) { $("p-" + t).hidden = t !== "studies"; $("tab-" + t).setAttribute("aria-selected", String(t === "studies")); }); focusStudy(); return; }
     if (tabs.indexOf(name) < 0) name = "market";
