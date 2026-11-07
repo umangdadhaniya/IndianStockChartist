@@ -91,6 +91,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .teaser { margin-top: 28px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; }
 .teaser button { text-align: left; cursor: pointer; font: inherit; color: inherit; }
 .teaser .big { font: 800 30px/1.1 var(--display); font-stretch: 80%; margin-top: 6px; }
+.teaser { align-items: start; }
+.teaser .sub { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
 /* chips */
 .chips { display: flex; gap: 6px; flex-wrap: wrap; }

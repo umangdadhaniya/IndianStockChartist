@@ -19,6 +19,26 @@
   "date": "2026-11-04",
   "value": 59.11
  },
+ "HEROMOTOCO": {
+  "date": "2026-11-07",
+  "value": 34.72
+ },
+ "JAMNAAUTO": {
+  "date": "2026-11-07",
+  "value": 44.81
+ },
+ "MACPOWER": {
+  "date": "2026-11-07",
+  "value": 73.22
+ },
+ "MCX": {
+  "date": "2026-11-07",
+  "value": 0.0
+ },
+ "MENONBE": {
+  "date": "2026-11-07",
+  "value": 66.66
+ },
  "PERSISTENT": {
   "date": "2026-11-01",
   "value": 28.82
@@ -26,5 +46,9 @@
  "TIPSMUSIC": {
   "date": "2026-11-01",
   "value": 64.32
+ },
+ "UNOMINDA": {
+  "date": "2026-11-07",
+  "value": 68.36
  }
 }
