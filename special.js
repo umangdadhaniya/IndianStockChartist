@@ -48,14 +48,14 @@ window.SPECIAL = [
     close: 44.97,
     closeNote: "Muhurat trading close, 8 Nov 2026",
     title: "Support bounce inside a 10-month base",
-    watch: { label: "Stop-loss", value: "32.00", kind: "stop" },
+    watch: { label: "Support zone", value: "35.35–36.50" },
     levels: ["51.87", "75.00"],
     chips: { M: "Weak", W: "Weak", D: "Weak" },
     fund: [
       ["Market cap", "₹462 Cr"], ["ROE 3Y", "44.7%"], ["ROCE 3Y", "53.9%"],
       ["Sales growth", "25.5%"], ["Profit growth", "25.1%"], ["Promoter", "73.2%"]
     ],
-    note: "The stock has held the 35.35 to 36.50 support zone since mid-2025, and this week's +8.75% candle bounced off it. Price is still below the falling trendline from the Jan 2026 high; 51.87 is where it meets that line, and a move through it opens 75. Stop-loss at 32, below the support zone. A micro cap with very low debt (0.03 debt to equity), so expect sharp moves both ways.",
+    note: "The stock has held the 35.35 to 36.50 support zone since mid-2025, and this week's +8.75% candle bounced off it. Price is still below the falling trendline from the Jan 2026 high; 51.87 is where it meets that line, and a move through it opens 75. A micro cap with very low debt (0.03 debt to equity), so expect sharp moves both ways.",
     chart: "charts/sigma-2026-11-08.jpg"
   }
 ];
