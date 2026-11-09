@@ -395,7 +395,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); };
   var fmt = function (n, d) { return Number(n).toLocaleString("en-IN", { maximumFractionDigits: d == null ? 2 : d, minimumFractionDigits: d == null ? 2 : d }); };
-  var signed = function (n, d) { return (n > 0 ? "+" : n < 0 ? "−" : "") + fmt(Math.abs(n), d); };
+  var signed = function (n, d) { var r = Number(Math.abs(n).toFixed(d == null ? 2 : d)); return (r === 0 ? "" : n > 0 ? "+" : "−") + fmt(Math.abs(n), d); };
   var cls = function (n) { return n > 0 ? "pos" : n < 0 ? "neg" : ""; };
   var dstr = function (iso, opts) { return new Date(iso + "T00:00:00").toLocaleDateString("en-IN", opts || { day: "numeric", month: "short", year: "numeric" }); };
   var chip = function (tf, st) { var c = ["Strong", "Bull", "Weak", "Bear"].indexOf(st) >= 0 ? st : "na"; return '<span class="chip ' + c + '">' + esc(tf) + "<b>" + esc(st || "n/a") + "</b></span>"; };
@@ -624,7 +624,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
   /* teaser cards on the market tab */
   var lastFlow = F && F.daily && F.daily[0];
   $("teaser").innerHTML = SP.map(function (p) {
-      return '<button class="card" data-go="' + esc(p.id) + '" style="border-color:var(--flat)"><div class="label">' + esc(p.tag) + '</div><div class="big">' + esc(p.symbol) + '</div><div class="sub">' + esc(p.title) + (p.watch.kind === "stop" ? ", levels " + esc(p.levels.join(", ")) : ", above " + esc(p.watch.value)) + "</div></button>";
+      return '<button class="card" data-go="' + esc(p.id) + '" style="border-color:var(--flat)"><div class="label">' + esc(p.tag) + '</div><div class="big">' + esc(p.symbol) + '</div><div class="sub">' + esc(p.title) + (", " + esc(p.watch.label.toLowerCase()) + " " + esc(p.watch.value)) + "</div></button>";
     }).join("") +
     '<button class="card" data-go="focus"><div class="label">Stocks in focus</div><div class="big">' + S.stocks.length + " stock" + (S.stocks.length === 1 ? "" : "s") + '</div><div class="sub">' + esc(S.stocks.map(function (s) { return s.symbol; }).join(", ") || "None today") + "</div></button>" +
     (lastFlow ? '<button class="card" data-go="flows"><div class="label">FII / DII · ' + esc(dstr(lastFlow.date, { day: "numeric", month: "short" })) + '</div><div class="big"><span class="' + cls(lastFlow.fii) + '">' + signed(lastFlow.fii, 0) + '</span> / <span class="' + cls(lastFlow.dii) + '">' + signed(lastFlow.dii, 0) + '</span></div><div class="sub">₹ crore, FII / DII net</div></button>' : "") +
@@ -658,7 +658,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
     items.push("Strong stocks: " + (S.strong.length ? esc(S.strong.map(function (s) { return s.symbol; }).join(", ")) : "none today"));
     items.push("No update on weekends and NSE holidays");
     items.push('New on the Trading blog: when to trade Bitcoin, 10 years of 4H and 2H data');
-    SP.forEach(function (p) { items.push('<span class="hi">' + esc(p.tag) + ": " + esc(p.symbol) + "</span> " + esc(p.title.toLowerCase()) + (p.watch.kind === "stop" ? ", levels " + esc(p.levels.join(", ")) : ", above " + esc(p.watch.value))); });
+    SP.forEach(function (p) { items.push('<span class="hi">' + esc(p.tag) + ": " + esc(p.symbol) + "</span> " + esc(p.title.toLowerCase()) + (", " + esc(p.watch.label.toLowerCase()) + " " + esc(p.watch.value))); });
     items.push("Chart study only, not buy or sell advice");
     var one = items.map(function (t) { return '<span class="ticker-item">' + t + "</span>"; }).join("");
     $("ticker").innerHTML = '<div class="ticker-track">' + one + '<span aria-hidden="true" style="display:inline-flex">' + one + "</span></div>";
