@@ -1,8 +1,13 @@
 {
   "unit": "₹ crore, cash market, net",
   "source": "NSE provisional data via upstox.com, 5paisa.com and niftytrader.in",
-  "asOf": "2026-11-08",
+  "asOf": "2026-11-09",
   "daily": [
+    {
+      "date": "2026-11-09",
+      "fii": 7212.22,
+      "dii": -7172.53
+    },
     {
       "date": "2026-11-08",
       "fii": -0.25,
@@ -162,8 +167,8 @@
     },
     {
       "month": "2026-11",
-      "fii": 45961,
-      "dii": -24897,
+      "fii": 53173,
+      "dii": -32070,
       "partial": true
     }
   ]
