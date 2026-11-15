@@ -368,6 +368,10 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
         <li><strong>Weekends are thin.</strong> Saturday and Sunday trade about half the volume of weekdays, so breakouts fail more often.</li>
       </ul>
       <p class="src">These edges are small (a few tenths of R) and exclude fees and slippage. This is a timing and risk filter, not a complete trading system. Past patterns do not guarantee future results.</p>
+      <h4 id="btc-update-2026-11-15">Update, 15 Nov 2026: price back at the big support zone</h4>
+      <p>Bitcoin fell about 13% this week on the weekly chart, from 74,670 to 64,904, with a low of 62,000. Price is now back near the <mark>59,000 to 63,000 support zone</mark>, which has held several times since February 2026. If a weekly candle closes below it, the next support zone is <mark>43,000 to 47,000</mark>. Resistance above is 86,662. I am watching how the weekly candle closes around this zone.</p>
+      <a class="chart" href="charts/btc-2026-11-15.jpg" target="_blank" rel="noopener"><img src="charts/btc-2026-11-15.jpg" alt="Bitcoin weekly chart, 15 Nov 2026" loading="lazy"></a>
+      <p class="src">Chart study only, not buy or sell advice. Crypto is highly volatile.</p>
       <div class="share-row post-share"></div>
     </article>
   </section>
@@ -476,7 +480,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
       (stop ? '<span class="gap"></span>' : "") +
       p.levels.map(function (v, i) { return (stop && i === 0 ? "" : '<span class="arrow">→</span>') + '<div class="lv"><div class="label">Level ' + (i + 1) + '</div><div class="num">' + esc(v) + "</div></div>"; }).join("");
     return '<article class="card stock special" id="' + esc(p.id) + '"><div class="side">' +
-      '<span class="fest">' + diya + esc(p.tag) + " · My pick</span>" +
+      '<span class="fest">' + (/diwali/i.test(p.tag) ? diya : "") + esc(p.tag) + " · My pick</span>" +
       '<div class="stock-head"><div><div class="sym">' + esc(p.symbol) + '</div><div class="sub">' + esc(p.name) + "</div></div>" +
       '<div class="px"><div class="label">Close</div><div class="num">₹' + fmt(p.close) + '</div><div class="sub" style="font-size:12px">' + esc(p.closeNote || "") + "</div></div></div>" +
       "<h3>" + esc(p.title) + "</h3>" +
@@ -657,6 +661,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
     items.push("Stocks in focus: " + S.stocks.length);
     items.push("Strong stocks: " + (S.strong.length ? esc(S.strong.map(function (s) { return s.symbol; }).join(", ")) : "none today"));
     items.push("No update on weekends and NSE holidays");
+    items.push('Bitcoin update: back at the 59,000 to 63,000 support zone (Trading blog)');
     items.push('New on the Trading blog: when to trade Bitcoin, 10 years of 4H and 2H data');
     SP.forEach(function (p) { items.push('<span class="hi">' + esc(p.tag) + ": " + esc(p.symbol) + "</span> " + esc(p.title.toLowerCase()) + (", " + esc(p.watch.label.toLowerCase()) + " " + esc(p.watch.value))); });
     items.push("Chart study only, not buy or sell advice");

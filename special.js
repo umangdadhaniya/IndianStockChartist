@@ -2,6 +2,63 @@
 // Not touched by the daily data update. Add, edit or remove entries by hand.
 window.SPECIAL = [
   {
+    id: "st-petronet-2026-11-15",
+    tag: "Weekend pick",
+    date: "2026-11-15",
+    symbol: "PETRONET",
+    name: "Petronet LNG",
+    close: 324.05,
+    closeNote: "Close, 13 Nov 2026",
+    title: "Range breakout, now pulling back",
+    watch: { label: "Key support", value: "314" },
+    levels: ["346", "367"],
+    chips: { M: "Weak", W: "Strong", D: "Bull" },
+    fund: [
+      ["Market cap", "₹48,608 Cr"], ["ROE", "18.4%"], ["ROCE", "22.6%"],
+      ["P/E", "10.5"], ["Profit growth", "26%"], ["Promoter", "50.0%"]
+    ],
+    note: "Strong on the weekly chart. The stock broke out of its 280 to 300 range in early November and reached about 336. Friday's candle pulled back 3.27% to 324. 314 is the key support: two daily closes below it would weaken the setup. 346 and 367 are the next resistance levels above.",
+    chart: "charts/petronet-2026-11-15.jpg"
+  },
+  {
+    id: "st-dcbbank-2026-11-15",
+    tag: "Weekend pick",
+    date: "2026-11-15",
+    symbol: "DCBBANK",
+    name: "DCB Bank",
+    close: 233.01,
+    closeNote: "Weekly close, 13 Nov 2026",
+    title: "Testing the September high after an 11.8% week",
+    watch: { label: "Breakout above", value: "238" },
+    levels: ["245.5", "255", "300"],
+    chips: { M: "Strong", W: "Strong", D: "Bull" },
+    fund: [
+      ["Market cap", "₹7,509 Cr"], ["ROE", "12.0%"], ["P/E", "8.9"],
+      ["Profit growth", "25%"], ["Net NPA", "0.73%"], ["Promoter", "16.2%"]
+    ],
+    note: "Up 11.76% this week to 233, right under the September high near 238. A weekly close above 238 confirms the breakout; 245.5 is the near-term level, then 255 and 300 on the bigger picture over the coming months. Support is at 224. Chart by ootyconnor1 on TradingView.",
+    chart: "charts/dcbbank-2026-11-15.jpg"
+  },
+  {
+    id: "st-edelweiss-2026-11-15",
+    tag: "Weekend pick",
+    date: "2026-11-15",
+    symbol: "EDELWEISS",
+    name: "Edelweiss Financial Services",
+    close: 136.19,
+    closeNote: "Weekly close, 13 Nov 2026",
+    title: "Rising base under the 140 to 143 ceiling",
+    watch: { label: "Weekly close above", value: "143" },
+    levels: ["155", "160"],
+    chips: { M: "Strong", W: "Strong", D: "Weak" },
+    fund: [
+      ["Market cap", "₹12,897 Cr"], ["ROE", "14.2%"], ["ROCE", "14.1%"],
+      ["Sales growth", "31%"], ["Profit growth", "63%"], ["Promoter", "31.5%"]
+    ],
+    note: "The 140 to 143 zone has capped price since 2024, while a rising trendline from the 2025 low keeps lifting the base: an ascending-triangle-like structure. Only after a weekly close above 143 do 155 and 160 come into play. Support is the trendline, then the 114 to 116 zone. Chart by ootyconnor1 on TradingView.",
+    chart: "charts/edelweiss-2026-11-15.jpg"
+  },
+  {
     id: "st-indianb-diwali-2026",
     tag: "Diwali special",
     date: "2026-11-08",
