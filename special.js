@@ -2,6 +2,25 @@
 // Not touched by the daily data update. Add, edit or remove entries by hand.
 window.SPECIAL = [
   {
+    id: "st-enginersin-2026-11-15",
+    tag: "Weekend pick",
+    date: "2026-11-15",
+    symbol: "ENGINERSIN",
+    name: "Engineers India",
+    close: 312.45,
+    closeNote: "Close, 13 Nov 2026",
+    title: "Pressing against the 316 ceiling",
+    watch: { label: "Sustain above", value: "316.65" },
+    levels: ["353.80", "424.95"],
+    chips: { M: "Strong", W: "Strong", D: "Strong" },
+    fund: [
+      ["Market cap", "₹17,561 Cr"], ["ROE", "23.4%"], ["ROCE", "30.4%"],
+      ["P/E", "19.6"], ["Profit growth", "67%"], ["Promoter (Govt)", "51.3%"]
+    ],
+    note: "Price has been stuck under the 316 to 318 zone since late September, and is now back at it after a rally from the October low near 240. 307 is the support just below. If price sustains above 316.65, the first level that opens is 353.80, then 424.95. Strong on the monthly, weekly and daily charts, with almost no debt. Chart by ootyconnor1 on TradingView.",
+    chart: "charts/enginersin-2026-11-15.jpg"
+  },
+  {
     id: "st-petronet-2026-11-15",
     tag: "Weekend pick",
     date: "2026-11-15",
