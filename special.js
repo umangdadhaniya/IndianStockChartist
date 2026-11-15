@@ -2,6 +2,25 @@
 // Not touched by the daily data update. Add, edit or remove entries by hand.
 window.SPECIAL = [
   {
+    id: "st-gmmpfaudlr-2026-11-15",
+    tag: "Weekend pick · Risky",
+    date: "2026-11-15",
+    symbol: "GMMPFAUDLR",
+    name: "GMM Pfaudler",
+    close: 1239.30,
+    closeNote: "Weekly close, 13 Nov 2026",
+    title: "Breakout retest of a long falling channel",
+    watch: { label: "Weekly close above", value: "1,100" },
+    levels: ["1,595", "2,000"],
+    chips: { M: "Weak", W: "Weak", D: "Weak" },
+    fund: [
+      ["Market cap", "₹5,572 Cr"], ["ROE", "6.7%"], ["ROCE", "13.6%"],
+      ["P/E", "47.3"], ["Sales growth", "15%"], ["Promoter", "25.2%"]
+    ],
+    note: "Risky setup. The stock broke out of a long falling channel in late August and rallied to about 1,540, then pulled back to the 1,114 to 1,165 breakout zone and bounced this week (+5.74%). The structure holds only while weekly candles close above 1,100; 1,595 and 2,000 are the levels above. Why risky: the trend is still Weak on the monthly, weekly and daily charts, the business numbers are modest (ROE 6.7%, P/E 47), and the gap to 1,100 is about 11% from here. Chart by ootyconnor1 on TradingView.",
+    chart: "charts/gmmpfaudlr-2026-11-15.jpg"
+  },
+  {
     id: "st-enginersin-2026-11-15",
     tag: "Weekend pick",
     date: "2026-11-15",
