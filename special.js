@@ -2,6 +2,25 @@
 // Not touched by the daily data update. Add, edit or remove entries by hand.
 window.SPECIAL = [
   {
+    id: "st-360one-2026-11-18",
+    tag: "Breakout watch",
+    date: "2026-11-18",
+    symbol: "360ONE",
+    name: "360 ONE WAM",
+    close: 1205.90,
+    closeNote: "Live price, 18 Nov 2026 (week not closed)",
+    title: "Testing the 1,205 ceiling after a trendline break",
+    watch: { label: "Weekly close above", value: "1,205" },
+    levels: ["1,300", "1,400"],
+    chips: { M: "Strong", W: "Weak", D: "Bull" },
+    fund: [
+      ["Market cap", "₹51,714 Cr"], ["ROE", "14.4%"], ["ROCE", "12.1%"],
+      ["P/E", "41.5"], ["Sales growth", "29%"], ["Profit growth", "11%"]
+    ],
+    note: "The 1,192 to 1,205 zone has capped price for over a year, with rejections in July 2025, December 2025 and August 2026. A falling trendline from the December 2024 high also held price down. This week price crossed the trendline and is testing 1,205 again. A weekly close above 1,205 confirms the breakout; 1,300 and 1,400 are the levels above. This week's low of 1,169 is the line to watch: a close back below it would mean the breakout failed. The weekly candle closes on Friday.",
+    chart: "charts/360one-2026-11-18.jpg"
+  },
+  {
     id: "st-gmmpfaudlr-2026-11-15",
     tag: "Weekend pick · Risky",
     date: "2026-11-15",
