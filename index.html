@@ -232,6 +232,25 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
 
 @media (max-width: 760px) { .mood { grid-template-columns: 1fr; align-items: start; } }
 @media (prefers-reduced-motion: no-preference) { .btn, .tab { transition: border-color .15s ease, color .15s ease; } }
+/* MTF calculator */
+.mtf { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 14px; align-items: start; }
+@media (max-width: 760px) { .mtf { grid-template-columns: minmax(0, 1fr); } }
+.mtf > *, .mtf-f label, .mtf-f .row2 > *, .mtf-out > * { min-width: 0; }
+.mtf-f { display: grid; gap: 14px; }
+.mtf-f label { display: grid; gap: 6px; font: 600 14px/1.3 var(--body); }
+.mtf-f input { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); font: 500 16px/1.2 var(--mono); }
+.mtf-f input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.mtf-f .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mtf-f details { border-top: 1px solid var(--line); padding-top: 10px; }
+.mtf-f summary { cursor: pointer; color: var(--muted); font: 500 13px/1.3 var(--mono); }
+.mtf-f details .row2 { margin-top: 12px; }
+.mtf-out { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 12px; }
+.mtf-out .val { font: 600 24px/1.15 var(--mono); font-variant-numeric: tabular-nums; margin-top: 6px; }
+.mtf-out .big { grid-column: 1 / -1; }
+.mtf-out .big .val { font-size: clamp(26px, 7vw, 34px); overflow-wrap: anywhere; }
+.mtf-break { width: 100%; min-width: 0; border-collapse: collapse; margin-top: 14px; font-size: 14px; }
+.mtf-break td { text-align: left; white-space: normal; padding: 7px 4px; border-bottom: 1px solid var(--line); }
+.mtf-break td:last-child { white-space: nowrap; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
@@ -260,6 +279,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
     <button class="tab" role="tab" id="tab-studies" data-tab="studies">My studies</button>
     <button class="tab" role="tab" id="tab-flows" data-tab="flows">FII / DII</button>
     <button class="tab" role="tab" id="tab-blog" data-tab="blog">Trading blog</button>
+    <button class="tab" role="tab" id="tab-mtf" data-tab="mtf">MTF calculator</button>
     <button class="tab" role="tab" id="tab-contact" data-tab="contact">Contact</button>
   </div>
 </div>
@@ -374,6 +394,38 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
       <p class="src">Chart study only, not buy or sell advice. Crypto is highly volatile.</p>
       <div class="share-row post-share"></div>
     </article>
+  </section>
+
+  <section class="wrap panel" id="p-mtf" role="tabpanel" aria-labelledby="tab-mtf" hidden>
+    <div class="panel-head">
+      <div><div class="label">Margin Trading Facility</div><h2>MTF calculator</h2>
+        <p>See what a margin-funded buy costs: how much you put in, how much the broker funds, the daily interest, the charges, and your profit or loss after all of it.</p></div>
+    </div>
+    <div class="mtf">
+      <form class="card mtf-f" id="mtfForm" onsubmit="return false">
+        <label>Total buy value (₹)<input id="mtfBuy" type="number" inputmode="decimal" min="0" step="100" value="50000"></label>
+        <div class="row2">
+          <label>Days held<input id="mtfDays" type="number" inputmode="numeric" min="1" step="1" value="30"></label>
+          <label>Expected return (%)<input id="mtfRet" type="number" inputmode="decimal" step="0.1" value="10"></label>
+        </div>
+        <label>Your margin (% of buy value)<input id="mtfMargin" type="number" inputmode="decimal" min="1" max="100" step="1" value="20"></label>
+        <details>
+          <summary>Rates and charges (edit to match your broker)</summary>
+          <div class="row2">
+            <label>Interest (% per day)<input id="mtfRate" type="number" inputmode="decimal" min="0" step="0.001" value="0.04"></label>
+            <label>Brokerage (% per order)<input id="mtfBrk" type="number" inputmode="decimal" min="0" step="0.01" value="0.3"></label>
+            <label>Brokerage cap (₹ per order)<input id="mtfCap" type="number" inputmode="decimal" min="0" step="1" value="20"></label>
+            <label>Pledge + unpledge (₹ each)<input id="mtfPledge" type="number" inputmode="decimal" min="0" step="1" value="15"></label>
+            <label>GST on charges (%)<input id="mtfGst" type="number" inputmode="decimal" min="0" step="1" value="18"></label>
+          </div>
+        </details>
+      </form>
+      <div>
+        <div class="mtf-out" id="mtfOut"></div>
+        <table class="mtf-break" id="mtfBreak"></table>
+      </div>
+    </div>
+    <p class="src">Interest = funded amount × daily rate × days held; it is charged from the day after purchase until you sell, weekends and holidays included. Charges = brokerage on the buy and the sell (the lower of the % or the cap, per order) plus one pledge and one unpledge, with GST. Exchange fees, STT, stamp duty and DP charges are not included. Default rates are common broker rates; check yours. For learning only, not advice.</p>
   </section>
 
   <section class="wrap panel" id="p-contact" role="tabpanel" aria-labelledby="tab-contact" hidden>
@@ -670,7 +722,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
   })();
 
   /* tabs with #hash */
-  var tabs = ["market", "focus", "strong", "studies", "flows", "blog", "contact"];
+  var tabs = ["market", "focus", "strong", "studies", "flows", "blog", "mtf", "contact"];
   function show(name, push) {
     if (name.indexOf("st-") === 0) {
       tabs.forEach(function (t) { $("p-" + t).hidden = t !== "strong"; $("tab-" + t).setAttribute("aria-selected", String(t === "strong")); });
@@ -690,6 +742,39 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
   });
   window.addEventListener("hashchange", function () { show(location.hash.slice(1)); });
   show(location.hash.slice(1));
+})();
+</script>
+<script>
+/* MTF calculator */
+(function () {
+  var ids = ["Buy", "Days", "Ret", "Margin", "Rate", "Brk", "Cap", "Pledge", "Gst"];
+  var g = function (k) { var v = parseFloat(document.getElementById("mtf" + k).value); return isFinite(v) ? v : 0; };
+  var inr = function (x) { var n = Math.abs(x) < 1e7 ? 2 : 0; return (x < 0 ? "−" : "") + "₹" + Math.abs(x).toLocaleString("en-IN", { minimumFractionDigits: n, maximumFractionDigits: n }); };
+  function calc() {
+    var buy = Math.max(g("Buy"), 0), days = Math.max(Math.round(g("Days")), 0), ret = g("Ret") / 100;
+    var mg = Math.min(Math.max(g("Margin"), 0), 100) / 100, rate = g("Rate") / 100, gst = g("Gst") / 100;
+    var own = buy * mg, funded = buy - own;
+    var interest = funded * rate * days;
+    var sell = buy * (1 + ret);
+    var brk = function (v) { return Math.min(v * g("Brk") / 100, g("Cap")); };
+    var brokerage = brk(buy) + brk(sell), pledge = 2 * g("Pledge");
+    var tax = (brokerage + pledge) * gst, charges = brokerage + pledge + tax;
+    var gross = sell - buy, net = gross - interest - charges;
+    var roi = own > 0 ? net / own * 100 : 0, cash = own * ret;
+    var cls = function (x) { return x >= 0 ? "pos" : "neg"; };
+    var card = function (lab, val, c, big) { return '<div class="card' + (big ? " big" : "") + '"><div class="label">' + lab + '</div><div class="val ' + (c || "") + '">' + val + "</div></div>"; };
+    document.getElementById("mtfOut").innerHTML =
+      card("Net profit / loss", inr(net) + ' <span style="font-size:16px">(' + (roi >= 0 ? "+" : "") + roi.toFixed(1) + "% on your money)</span>", cls(net), true) +
+      card("Your investment", inr(own)) + card("Funded by broker", inr(funded)) +
+      card("Interest for " + days + " days", inr(interest), "neg") + card("Brokerage + charges", inr(charges), "neg");
+    var rows = [["Total buy value", inr(buy)], ["Sell value at " + (ret * 100).toFixed(1) + "%", inr(sell)], ["Gross profit / loss", inr(gross)],
+      ["Interest (" + inr(funded) + " × " + (rate * 100).toFixed(3) + "% × " + days + " days)", "−" + inr(interest)],
+      ["Brokerage, buy + sell", "−" + inr(brokerage)], ["Pledge + unpledge", "−" + inr(pledge)], ["GST on charges", "−" + inr(tax)],
+      ["Net profit / loss", inr(net)], ["Same trade with only your own money (no MTF)", inr(cash)]];
+    document.getElementById("mtfBreak").innerHTML = rows.map(function (r, i) { return "<tr" + (i === 7 ? ' style="font-weight:600"' : "") + "><td>" + r[0] + "</td><td>" + r[1] + "</td></tr>"; }).join("");
+  }
+  ids.forEach(function (k) { document.getElementById("mtf" + k).addEventListener("input", calc); });
+  calc();
 })();
 </script>
 </body>
