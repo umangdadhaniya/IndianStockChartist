@@ -84,6 +84,13 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .mood-word.Bearish { color: var(--down); } .mood-word.Bullish { color: var(--up); } .mood-word.Neutral { color: var(--flat); }
 .mood-text { max-width: 46ch; color: var(--muted); margin: 14px 0 0; }
 .indices { display: grid; gap: 12px; }
+.nlevels { margin-top: 24px; }
+.nlevels-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 12px; }
+.nlevel { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+.nlevel .k { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.nlevel .v { font: 800 26px/1.1 var(--display); font-stretch: 80%; margin-top: 4px; }
+.nlevel.res .v { color: var(--down); } .nlevel.sup .v { color: var(--up); }
+.nlevels-note { color: var(--muted); margin: 12px 0 0; max-width: 70ch; }
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; min-width: 0; }
 .index { display: grid; gap: 10px; }
 .index-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
@@ -294,6 +301,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
       </div>
       <div class="indices" id="indices"></div>
     </div>
+    <div class="card nlevels" id="niftyLevels"></div>
     <div class="teaser" id="teaser"></div>
   </section>
 
@@ -444,6 +452,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
 
 <script src="special.js"></script>
 <script src="data.js"></script>
+<script src="nifty_levels.js"></script>
 <script>
 (function () {
   var S = window.SITE || {};
@@ -494,6 +503,16 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
       ' <span class="' + cls(ix.change) + '">' + (ix.change > 0 ? "+" : "") + ix.change.toFixed(2) + "%</span></span></div>" +
       '<div class="chips">' + chip("Monthly", ix.monthly) + chip("Weekly", ix.weekly) + chip("Daily", ix.daily) + "</div></div>";
   }).join("");
+
+  /* nifty chart levels (nifty_levels.js) */
+  var NL = window.NIFTY_LEVELS;
+  if (NL && $("niftyLevels")) {
+    $("niftyLevels").innerHTML = '<div class="label">Nifty 50 chart levels · daily · as of ' + esc(NL.asOf) + '</div>' +
+      '<div class="nlevels-grid">' +
+      NL.resistance.map(function (v) { return '<div class="nlevel res"><div class="k">Resistance</div><div class="v num">' + fmt(v, 0) + '</div></div>'; }).join("") +
+      NL.support.map(function (v) { return '<div class="nlevel sup"><div class="k">Support</div><div class="v num">' + fmt(v, 0) + '</div></div>'; }).join("") +
+      '</div><p class="nlevels-note">' + esc(NL.note) + ' Chart study only, not a buy or sell call.</p>';
+  }
 
   /* stocks */
   $("stocks").innerHTML = S.stocks.length ? S.stocks.map(function (s) {
@@ -710,6 +729,7 @@ footer p { max-width: 80ch; margin: 0 0 8px; }
     });
     if (lastFlow) items.push("FII " + '<span class="' + (lastFlow.fii >= 0 ? "up" : "dn") + '">' + signed(lastFlow.fii, 0) + "</span> · DII " +
       '<span class="' + (lastFlow.dii >= 0 ? "up" : "dn") + '">' + signed(lastFlow.dii, 0) + "</span> ₹ Cr (" + esc(dstr(lastFlow.date, { day: "numeric", month: "short" })) + ")");
+    if (window.NIFTY_LEVELS) items.push("Nifty levels: R " + window.NIFTY_LEVELS.resistance.map(function (v) { return fmt(v, 0); }).join(", ") + " · S " + window.NIFTY_LEVELS.support.map(function (v) { return fmt(v, 0); }).join(" / "));
     items.push("Stocks in focus: " + S.stocks.length);
     items.push("Strong stocks: " + (S.strong.length ? esc(S.strong.map(function (s) { return s.symbol; }).join(", ")) : "none today"));
     items.push("No update on weekends and NSE holidays");
